@@ -1,6 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+<<<<<<< HEAD
 import { FormArray, ReactiveFormsModule } from "@angular/forms";
+=======
+import { ReactiveFormsModule } from "@angular/forms";
+>>>>>>> 1ee01d79fe179ec326b6ae6d742ac630e004765e
 import { MatSnackBar } from "@angular/material";
 import { of } from "rxjs";
 import { NavigationService } from "src/app/services/navigation.service";
