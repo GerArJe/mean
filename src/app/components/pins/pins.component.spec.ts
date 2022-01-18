@@ -39,7 +39,7 @@ class PinsServiceStub {
   }
 }
 
-describe("PinsComponent", () => {
+fdescribe("PinsComponent", () => {
   let component: PinsComponent;
   let fixture: ComponentFixture<PinsComponent>;
 
@@ -73,5 +73,31 @@ describe("PinsComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("When new page is open", () => {
+    const open = spyOn(window, "open");
+
+    component.openUrl("https://platzi.com");
+
+    expect(open).toHaveBeenCalledWith("https://platzi.com", "_blank");
+  });
+
+  it("When update progress", () => {
+    component.pins = PINS;
+    const pin = PINS[0];
+    const updatePin = spyOn(
+      (<any>component).repository,
+      "updatePin"
+    ).and.returnValue(of(true));
+    const open = spyOn((<any>component).snackBar, "open");
+    const pinService = TestBed.get(PinsService);
+    const repository = TestBed.get(RepositoryService);
+    repository.updatePin(pin._id, pin);
+    pinService.resolve("save");
+    expect(open).toHaveBeenCalledWith("Progress updated!", "OK", {
+      duration: 2000,
+    });
+    expect(updatePin).toHaveBeenCalledWith(pin._id, pin);
   });
 });
