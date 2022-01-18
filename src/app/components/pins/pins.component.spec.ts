@@ -1,16 +1,68 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { of, Subject } from "rxjs";
 
-import { PinsComponent } from './pins.component';
+import { MatSnackBar } from "@angular/material";
 
-describe('PinsComponent', () => {
+import { PinsService } from "./pins.service";
+import { RepositoryService } from "src/app/services/repository.service";
+import { PinsComponent } from "./pins.component";
+import { PINS } from "src/app/services/mocks/pins";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
+
+class RepositoryServiceStub {
+  oberver = new Subject();
+
+  getPins() {
+    return this.oberver;
+  }
+
+  resolvePins() {
+    this.oberver.next(JSON.parse(JSON.stringify(PINS)));
+  }
+
+  updatePin() {
+    return of(true);
+  }
+}
+
+class MatSnackBarStub {
+  open() {}
+}
+
+class PinsServiceStub {
+  oberver = new Subject();
+  $actionObserver = this.oberver.asObservable();
+
+  public resolve(action) {
+    return this.oberver.next(action);
+  }
+}
+
+describe("PinsComponent", () => {
   let component: PinsComponent;
   let fixture: ComponentFixture<PinsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PinsComponent ]
-    })
-    .compileComponents();
+      declarations: [PinsComponent],
+      providers: [
+        {
+          provide: RepositoryService,
+          useClass: RepositoryServiceStub,
+        },
+        {
+          provide: MatSnackBar,
+          useClass: MatSnackBarStub,
+        },
+        {
+          provide: PinsService,
+          useClass: PinsServiceStub,
+        },
+      ],
+      imports: [ReactiveFormsModule],
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +71,7 @@ describe('PinsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
