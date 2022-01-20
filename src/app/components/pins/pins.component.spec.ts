@@ -42,6 +42,7 @@ class PinsServiceStub {
 fdescribe("PinsComponent", () => {
   let component: PinsComponent;
   let fixture: ComponentFixture<PinsComponent>;
+  let service: PinsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -68,6 +69,7 @@ fdescribe("PinsComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PinsComponent);
     component = fixture.componentInstance;
+    component.step = 0;
     fixture.detectChanges();
   });
 
@@ -99,5 +101,24 @@ fdescribe("PinsComponent", () => {
       duration: 2000,
     });
     expect(updatePin).toHaveBeenCalledWith(pin._id, pin);
+  });
+
+  it("setStep", () => {
+    const index = 1;
+    const updatePercentage = spyOn(<any>component, "updatePercentage");
+    component.setStep(index);
+    expect(component.step).toBe(index);
+    expect(updatePercentage).toHaveBeenCalled();
+  });
+
+  it("nextStep", () => {
+    component.nextStep();
+    expect(component.step).toBe(1);
+  });
+
+  it("prevStep", () => {
+    component.step = 1;
+    component.prevStep();
+    expect(component.step).toBe(0);
   });
 });
